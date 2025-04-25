@@ -45,13 +45,13 @@ data {
 }
 
 transformed data {
-    vector[p] jota = rep_vector(1, p); // Column vector of ones
-    matrix[p, p] I = diag_matrix(rep_vector(1, p)); // Identity matrix
+    vector[p] jota = rep_vector(1, p); //Column vector of ones
+    matrix[p, p] I = diag_matrix(rep_vector(1, p)); //Identity matrix
 }
 
 parameters {
   matrix[m*p, m] Beta;
-  matrix[m] mu;
+  matrix[m] mu; //steady-state
   cov_matrix[m] Sigma;
 }
 
@@ -70,14 +70,14 @@ generated quantities {
   
   matrix[m, m] phi[p];
   for (i in 1:p) {
-    phi[i] = Beta[((i - 1) * m + 1):(i * m), :];  // Extract phi_1 , ... , phi_p
+    phi[i] = Beta[((i - 1) * m + 1):(i * m), :];  //Extract phi_1 , ... , phi_p
   }
   
-  matrix[H, m] Y_hat; #forecasts
+  matrix[H, m] Y_hat; //forecasts
   
   for (h in 1:H) {
     vector[m] e_t = multi_normal_rng(rep_vector(0, m), Sigma);
-    vector[m] mu_t = mu; #y_t = mu_t + e_t
+    vector[m] mu_t = mu; //y_t = mu_t + e_t
 
     if (h > 1) {
       for (i in 1:min(h-1, p)) {
